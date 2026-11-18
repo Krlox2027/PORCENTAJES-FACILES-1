@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porcentajes Fáciles con el profesor Carlos Huancaya Matos</title>
+    <!-- Tailwind CSS para diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuentes Fredoka e Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti para celebración al resolver cada ejercicio -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Tone.js para efectos de sonido suaves -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ecfeff 0%, #eff6ff 50%, #f5f3ff 100%);
+            min-height: 100vh;
+        }
+        h1, h2, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card-shadow {
+            box-shadow: 0 20px 30px -10px rgba(14, 116, 144, 0.12), 0 8px 15px -6px rgba(79, 70, 229, 0.08);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.35s ease-in-out;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.96) translateY(12px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop {
+            animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between p-4 sm:p-6 md:p-8 text-slate-800 select-none">
+
+    <!-- Título Principal -->
+    <div class="w-full max-w-3xl text-center mb-4 animate-pop">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 via-blue-700 to-indigo-700 drop-shadow-sm">
+            Porcentajes Fáciles con el profesor Carlos Huancaya Matos
+        </h1>
+    </div>
+
+    <!-- Barra Superior: Nivel, ID único de PC y Progreso de 30 ejercicios -->
+    <header class="w-full max-w-3xl bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:px-6 card-shadow border border-white flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="px-3.5 py-1.5 rounded-full text-sm font-bold tracking-wide bg-cyan-100 text-cyan-800 border border-cyan-200 flex items-center gap-1.5">
+                <span>💯</span> <span>Porcentajes Fáciles</span>
+            </div>
+            <span id="session-id" class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200" title="Orden único generado para esta computadora">
+                PC #----
+            </span>
+        </div>
+
+        <div class="w-full sm:w-1/2 flex flex-col gap-1.5">
+            <div class="flex justify-between text-xs font-semibold text-slate-600">
+                <span>Progreso Total</span>
+                <span id="progress-counter">Página 1 de 30</span>
+            </div>
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-full transition-all duration-500" style="width: 3.33%;"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal (1 Ejercicio por Página) -->
+    <main class="w-full max-w-3xl my-auto py-6">
+        <div id="exercise-card" class="bg-white rounded-3xl p-6 sm:p-10 card-shadow border border-cyan-50 animate-pop">
+            
+            <!-- Etiqueta de categoría y control de audio -->
+            <div class="flex items-center justify-between mb-5">
+                <span id="problem-category" class="text-xs font-bold uppercase tracking-wider text-cyan-700 bg-cyan-50 px-3.5 py-1.5 rounded-full border border-cyan-100">
+                    🛍️ Tienda
+                </span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-slate-400 hidden sm:inline">Resuelve para avanzar</span>
+                    <button onclick="toggleSound()" id="sound-btn" class="text-slate-500 hover:text-cyan-600 transition p-2 rounded-xl hover:bg-slate-50 cursor-pointer" title="Activar/Silenciar sonido">
+                        🔊
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenido en dos columnas en pantallas medianas: Imagen Ilustrativa + Problema -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mb-6">
+                <!-- Contenedor de Imagen SVG Temática -->
+                <div class="md:col-span-5 flex flex-col items-center justify-center bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-2xl p-5 border border-cyan-100/80 shadow-inner">
+                    <div id="problem-image" class="w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center animate-float">
+                        <!-- SVG dinámico insertado por JS -->
+                    </div>
+                    <span id="image-caption" class="mt-2 text-xs font-semibold text-cyan-800/70 bg-white/80 px-3 py-1 rounded-full">
+                        Ilustración del problema
+                    </span>
+                </div>
+
+                <!-- Enunciado del Problema -->
+                <div class="md:col-span-7 flex flex-col justify-center">
+                    <h1 id="problem-title" class="text-xl sm:text-2xl font-bold text-slate-800 mb-3">
+                        Ejercicio #1
+                    </h1>
+                    <p id="problem-story" class="text-base sm:text-lg text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        Cargando problema...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Caja de Respuesta (Obligatoria para desbloquear el siguiente) -->
+            <div id="answer-box" class="p-5 sm:p-6 rounded-2xl border-2 border-blue-200 bg-blue-50/40 transition-all duration-300">
+                <label for="answer-input" id="question-prompt" class="block font-bold text-blue-950 text-base sm:text-lg mb-3">
+                    ¿Cuál es el resultado?
+                </label>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div class="relative flex-1 max-w-xs">
+                        <input type="text" inputmode="decimal" id="answer-input" placeholder="Escribe tu respuesta..." 
+                            class="w-full px-4 py-3.5 rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:outline-none text-lg font-bold text-slate-800 bg-white transition"
+                            autocomplete="off">
+                        <span id="answer-unit" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm"></span>
+                    </div>
+                    <button id="check-btn" onclick="checkAnswer()" 
+                        class="px-7 py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 active:scale-95 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition cursor-pointer">
+                        Comprobar Respuesta
+                    </button>
+                </div>
+                <p id="feedback-msg" class="mt-3 text-sm font-semibold hidden"></p>
+            </div>
+
+            <!-- Sección Siguiente Página (Bloqueada hasta acertar) -->
+            <div id="next-section" class="mt-7 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 hidden animate-pop">
+                <div class="flex items-center gap-3 text-emerald-700 bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-200 w-full sm:w-auto">
+                    <span class="text-2xl">🎊</span>
+                    <div>
+                        <p class="font-bold text-sm">¡Respuesta Correcta!</p>
+                        <p class="text-xs text-emerald-600">Ya puedes pasar a la siguiente página.</p>
+                    </div>
+                </div>
+                <button id="next-btn" onclick="nextExercise()" 
+                    class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>Siguiente Ejercicio</span>
+                    <span>➔</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla Final de Victoria al completar los 30 ejercicios -->
+        <div id="victory-card" class="hidden bg-white rounded-3xl p-8 sm:p-12 card-shadow border border-emerald-100 text-center animate-pop">
+            <div class="w-24 h-24 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-5xl mx-auto mb-6 shadow-inner">
+                🏆
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-3">
+                ¡Felicidades, Reto Completado!
+            </h1>
+            <p class="text-slate-600 max-w-lg mx-auto mb-6 text-lg leading-relaxed">
+                Has resuelto correctamente los <strong>30 problemas de porcentaje</strong>. ¡Excelente trabajo con las matemáticas!
+            </p>
+            <div class="inline-block bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 mb-8">
+                <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Código único de esta computadora</p>
+                <p id="final-pc-code" class="text-2xl font-mono font-bold text-cyan-700 mt-1">PC-0000</p>
+            </div>
+            <div>
+                <button onclick="resetAll()" 
+                    class="px-7 py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition cursor-pointer shadow-md">
+                    🔄 Mezclar de nuevo y volver a empezar
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="text-center text-xs text-slate-400 pb-2">
+        Recuerda: 50% es la mitad, 25% es la cuarta parte y 10% es dividir entre 10.
+    </footer>
+
+    <script>
+        // ==========================================
+        // BIBLIOTECA DE ILUSTRACIONES SVG TEMÁTICAS
+        // ==========================================
+        const svgIllustrations = {
+            bag: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="25" y="40" width="70" height="65" rx="12" fill="#38bdf8"/>
+                    <path d="M42 40 V28 C42 18 78 18 78 28 V40" fill="none" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+                    <circle cx="60" cy="72" r="18" fill="#ffffff"/>
+                    <text x="60" y="79" font-size="20" font-weight="bold" fill="#0284c7" text-anchor="middle">%</text>
+                  </svg>`,
+            cake: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="22" y="62" width="76" height="36" rx="8" fill="#f472b6"/>
+                    <path d="M22 68 Q35 78 48 68 T74 68 T98 68 L98 62 Q98 54 90 54 L30 54 Q22 54 22 62 Z" fill="#fbcfe8"/>
+                    <rect x="56" y="32" width="8" height="22" rx="3" fill="#fde047"/>
+                    <path d="M60 16 C65 22 65 28 60 30 C55 28 55 22 60 16 Z" fill="#f97316"/>
+                  </svg>`,
+            book: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="26" y="22" width="68" height="78" rx="8" fill="#6366f1"/>
+                    <rect x="34" y="22" width="56" height="78" rx="4" fill="#818cf8"/>
+                    <rect x="44" y="36" width="36" height="16" rx="4" fill="#ffffff"/>
+                    <line x1="44" y1="64" x2="78" y2="64" stroke="#e0e7ff" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="44" y1="76" x2="68" y2="76" stroke="#e0e7ff" stroke-width="4" stroke-linecap="round"/>
+                  </svg>`,
+            apple: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <path d="M60 40 C42 32 24 46 28 72 C32 94 48 102 60 96 C72 102 88 94 92 72 C96 46 78 32 60 40 Z" fill="#ef4444"/>
+                    <path d="M60 40 Q62 24 70 18" fill="none" stroke="#78350f" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M62 28 Q78 20 82 32 Q70 36 62 28 Z" fill="#22c55e"/>
+                    <ellipse cx="43" cy="56" rx="5" ry="10" transform="rotate(-20 43 56)" fill="#fca5a5"/>
+                  </svg>`,
+            piggy: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <ellipse cx="62" cy="66" rx="36" ry="28" fill="#f9a8d4"/>
+                    <rect x="92" y="58" width="12" height="16" rx="5" fill="#f472b6"/>
+                    <rect x="42" y="88" width="10" height="14" rx="4" fill="#f472b6"/>
+                    <rect x="72" y="88" width="10" height="14" rx="4" fill="#f472b6"/>
+                    <circle cx="80" cy="58" r="3.5" fill="#1e293b"/>
+                    <rect x="52" y="42" width="18" height="5" rx="2.5" fill="#be185d"/>
+                    <circle cx="61" cy="26" r="10" fill="#facc15" stroke="#eab308" stroke-width="2"/>
+                  </svg>`,
+            shirt: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <path d="M40 26 L20 42 L32 56 L42 48 L42 96 L78 96 L78 48 L88 56 L100 42 L80 26 Q60 36 40 26 Z" fill="#14b8a6"/>
+                    <circle cx="60" cy="62" r="12" fill="#ccfbf1"/>
+                    <text x="60" y="67" font-size="14" font-weight="bold" fill="#0f766e" text-anchor="middle">%</text>
+                  </svg>`,
+            ball: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <circle cx="60" cy="60" r="38" fill="#fb923c"/>
+                    <path d="M22 60 H98 M60 22 V98" stroke="#7c2d12" stroke-width="3.5"/>
+                    <path d="M33 33 Q60 60 33 87 M87 33 Q60 60 87 87" fill="none" stroke="#7c2d12" stroke-width="3.5"/>
+                  </svg>`,
+            tree: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="52" y="72" width="16" height="30" rx="3" fill="#92400e"/>
+                    <circle cx="60" cy="52" r="28" fill="#22c55e"/>
+                    <circle cx="42" cy="62" r="20" fill="#16a34a"/>
+                    <circle cx="78" cy="62" r="20" fill="#16a34a"/>
+                  </svg>`,
+            bus: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="20" y="34" width="80" height="48" rx="10" fill="#facc15"/>
+                    <rect x="28" y="42" width="18" height="16" rx="3" fill="#e0f2fe"/>
+                    <rect x="51" y="42" width="18" height="16" rx="3" fill="#e0f2fe"/>
+                    <rect x="74" y="42" width="18" height="16" rx="3" fill="#e0f2fe"/>
+                    <circle cx="38" cy="84" r="10" fill="#1e293b"/>
+                    <circle cx="82" cy="84" r="10" fill="#1e293b"/>
+                  </svg>`,
+            battery: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="36" y="28" width="48" height="72" rx="8" fill="#e2e8f0" stroke="#64748b" stroke-width="4"/>
+                    <rect x="50" y="20" width="20" height="8" rx="2" fill="#64748b"/>
+                    <rect x="42" y="54" width="36" height="40" rx="4" fill="#10b981"/>
+                  </svg>`,
+            pencil: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <g transform="rotate(45 60 60)">
+                        <rect x="50" y="24" width="20" height="60" rx="2" fill="#f59e0b"/>
+                        <rect x="50" y="18" width="20" height="10" rx="3" fill="#f43f5e"/>
+                        <polygon points="50,84 70,84 60,104" fill="#fde68a"/>
+                        <polygon points="57,98 63,98 60,104" fill="#1e293b"/>
+                    </g>
+                  </svg>`,
+            ticket: `<svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-sm">
+                    <rect x="20" y="38" width="80" height="44" rx="8" fill="#8b5cf6"/>
+                    <circle cx="20" cy="60" r="8" fill="#eff6ff"/>
+                    <circle cx="100" cy="60" r="8" fill="#eff6ff"/>
+                    <text x="60" y="66" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">VIP %</text>
+                  </svg>`
+        };
+
+        // ==========================================
+        // BANCO DE 30 PROBLEMAS FÁCILES DE PORCENTAJE
+        // ==========================================
+        const percentageProblems = [
+            {
+                id: "P01", category: "🛍️ Compras", img: "bag", caption: "50% de descuento",
+                story: "Una mochila cuesta $40. Hoy tiene un descuento del 50% (la mitad de su precio). ¿Cuánto dinero te descuentan?",
+                prompt: "¿Cuánto es el 50% de $40?", ans: 20, unit: "$"
+            },
+            {
+                id: "P02", category: "🍎 Frutería", img: "apple", caption: "Cesta con 20 manzanas",
+                story: "En una cesta hay 20 manzanas. El 50% de las manzanas son rojas. ¿Cuántas manzanas rojas hay en la cesta?",
+                prompt: "¿Cuánto es el 50% de 20?", ans: 10, unit: "manzanas"
+            },
+            {
+                id: "P03", category: "📚 Biblioteca", img: "book", caption: "Libro de 100 páginas",
+                story: "Camila está leyendo un libro que tiene 100 páginas. Ya ha leído el 35% del libro. ¿Cuántas páginas ha leído?",
+                prompt: "¿Cuánto es el 35% de 100?", ans: 35, unit: "páginas"
+            },
+            {
+                id: "P04", category: "🎂 Repostería", img: "cake", caption: "20 pastelitos",
+                story: "En una bandeja hay 20 pastelitos. El 25% (la cuarta parte) son de chocolate. ¿Cuántos pastelitos son de chocolate?",
+                prompt: "¿Cuánto es el 25% de 20?", ans: 5, unit: "pastelitos"
+            },
+            {
+                id: "P05", category: "🐷 Alcancía", img: "piggy", caption: "Ahorros de $50",
+                story: "Mateo tiene $50 ahorrados en su alcancía y decide gastar el 10% en estampas. ¿Cuánto dinero gastó?",
+                prompt: "¿Cuánto es el 10% de $50?", ans: 5, unit: "$"
+            },
+            {
+                id: "P06", category: "👕 Ropa", img: "shirt", caption: "Camiseta de $30",
+                story: "Una camiseta cuesta $30. Si la tienda ofrece una rebaja del 10%, ¿cuántos dólares te ahorras?",
+                prompt: "¿Cuánto es el 10% de $30?", ans: 3, unit: "$"
+            },
+            {
+                id: "P07", category: "⚽ Deportes", img: "ball", caption: "40 balones",
+                story: "En el gimnasio de la escuela hay 40 balones. El 50% son de fútbol. ¿Cuántos balones de fútbol hay?",
+                prompt: "¿Cuánto es el 50% de 40?", ans: 20, unit: "balones"
+            },
+            {
+                id: "P08", category: "🌳 Naturaleza", img: "tree", caption: "Parque con 60 árboles",
+                story: "En un parque hay 60 árboles plantados. El 50% son pinos. ¿Cuántos pinos hay en el parque?",
+                prompt: "¿Cuánto es el 50% de 60?", ans: 30, unit: "pinos"
+            },
+            {
+                id: "P09", category: "🚌 Transporte", img: "bus", caption: "40 asientos",
+                story: "Un autobús escolar tiene 40 asientos. Si el 25% de los asientos están vacíos, ¿cuántos asientos vacíos hay?",
+                prompt: "¿Cuánto es el 25% de 40?", ans: 10, unit: "asientos"
+            },
+            {
+                id: "P10", category: "🔋 Tecnología", img: "battery", caption: "Batería de 80 minutos",
+                story: "La batería completa de una tableta dura 80 minutos. Si ahora tiene el 50% de carga, ¿cuántos minutos le quedan?",
+                prompt: "¿Cuánto es el 50% de 80?", ans: 40, unit: "minutos"
+            },
+            {
+                id: "P11", category: "✏️ Útiles", img: "pencil", caption: "Caja de 20 lápices",
+                story: "Una caja trae 20 lápices de colores. Si el 10% son de color azul, ¿cuántos lápices azules hay?",
+                prompt: "¿Cuánto es el 10% de 20?", ans: 2, unit: "lápices"
+            },
+            {
+                id: "P12", category: "🎟️ Cine", img: "ticket", caption: "Sala de 100 butacas",
+                story: "Una sala de cine tiene 100 butacas. Para la función de la tarde se vendió el 72% de las entradas. ¿Cuántas entradas se vendieron?",
+                prompt: "¿Cuánto es el 72% de 100?", ans: 72, unit: "entradas"
+            },
+            {
+                id: "P13", category: "🛍️ Ofertas", img: "bag", caption: "Bolso de $80",
+                story: "Un bolso de viaje cuesta $80. Por aniversario tiene un descuento del 25%. ¿Cuánto dinero te descuentan?",
+                prompt: "¿Cuánto es el 25% de $80?", ans: 20, unit: "$"
+            },
+            {
+                id: "P14", category: "🍎 Merienda", img: "apple", caption: "30 frutas",
+                story: "En una caja hay 30 frutas entre peras y manzanas. Si el 10% son peras, ¿cuántas peras hay?",
+                prompt: "¿Cuánto es el 10% de 30?", ans: 3, unit: "peras"
+            },
+            {
+                id: "P15", category: "📚 Lectura", img: "book", caption: "Cuento de 20 páginas",
+                story: "Un cuento corto tiene 20 páginas. Sofía ya leyó el 50% antes de dormir. ¿Cuántas páginas leyó?",
+                prompt: "¿Cuánto es el 50% de 20?", ans: 10, unit: "páginas"
+            },
+            {
+                id: "P16", category: "🎂 Fiesta", img: "cake", caption: "50 invitados",
+                story: "A una fiesta de cumpleaños asistieron 50 personas. El 20% eran familiares. ¿Cuántos familiares asistieron?",
+                prompt: "¿Cuánto es el 20% de 50?", ans: 10, unit: "personas"
+            },
+            {
+                id: "P17", category: "🐷 Ahorro", img: "piggy", caption: "Meta de $100",
+                story: "Lucas quiere juntar $100 para un juego. Si ya tiene ahorrado el 45%, ¿cuántos dólares tiene?",
+                prompt: "¿Cuánto es el 45% de $100?", ans: 45, unit: "$"
+            },
+            {
+                id: "P18", category: "👕 Tienda", img: "shirt", caption: "Chaqueta de $60",
+                story: "Una chaqueta deportiva cuesta $60. Si tiene un descuento del 50%, ¿cuánto cuesta la rebaja?",
+                prompt: "¿Cuánto es el 50% de $60?", ans: 30, unit: "$"
+            },
+            {
+                id: "P19", category: "⚽ Torneo", img: "ball", caption: "10 partidos",
+                story: "Un equipo jugó 10 partidos en el torneo y ganó el 80% de ellos. ¿Cuántos partidos ganó?",
+                prompt: "¿Cuánto es el 80% de 10?", ans: 8, unit: "partidos"
+            },
+            {
+                id: "P20", category: "🌳 Bosque", img: "tree", caption: "100 plantas",
+                story: "Los estudiantes sembraron 100 plantas en el jardín. El 15% son rosales. ¿Cuántos rosales sembraron?",
+                prompt: "¿Cuánto es el 15% de 100?", ans: 15, unit: "rosales"
+            },
+            {
+                id: "P21", category: "🚌 Excursión", img: "bus", caption: "30 estudiantes",
+                story: "Un grupo de 30 estudiantes va de excursión. El 50% lleva gorra para el sol. ¿Cuántos estudiantes llevan gorra?",
+                prompt: "¿Cuánto es el 50% de 30?", ans: 15, unit: "estudiantes"
+            },
+            {
+                id: "P22", category: "🔋 Celular", img: "battery", caption: "100% de carga",
+                story: "Un teléfono tiene 100 minutos de uso continuo. Si gasta el 25% viendo videos, ¿cuántos minutos gastó?",
+                prompt: "¿Cuánto es el 25% de 100?", ans: 25, unit: "minutos"
+            },
+            {
+                id: "P23", category: "✏️ Clase de Arte", img: "pencil", caption: "40 marcadores",
+                story: "En el salón hay 40 marcadores. El 10% no tiene tapa. ¿Cuántos marcadores no tienen tapa?",
+                prompt: "¿Cuánto es el 10% de 40?", ans: 4, unit: "marcadores"
+            },
+            {
+                id: "P24", category: "🎟️ Teatro", img: "ticket", caption: "60 boletos",
+                story: "Se imprimieron 60 boletos para la obra escolar. El 25% se regaló a los padres. ¿Cuántos boletos se regalaron?",
+                prompt: "¿Cuánto es el 25% de 60?", ans: 15, unit: "boletos"
+            },
+            {
+                id: "P25", category: "🛍️ Juguetería", img: "bag", caption: "Juego de $70",
+                story: "Un juego de mesa cuesta $70. Hoy tiene un 10% de descuento. ¿Cuánto dinero te descuentan?",
+                prompt: "¿Cuánto es el 10% de $70?", ans: 7, unit: "$"
+            },
+            {
+                id: "P26", category: "🍎 Cosecha", img: "apple", caption: "80 naranjas",
+                story: "Se cosecharon 80 naranjas del árbol. El 25% se usó para hacer jugo. ¿Cuántas naranjas se usaron?",
+                prompt: "¿Cuánto es el 25% de 80?", ans: 20, unit: "naranjas"
+            },
+            {
+                id: "P27", category: "📚 Enciclopedia", img: "book", caption: "50 capítulos",
+                story: "Una enciclopedia tiene 50 capítulos. El 50% trata sobre animales. ¿Cuántos capítulos tratan sobre animales?",
+                prompt: "¿Cuánto es el 50% de 50?", ans: 25, unit: "capítulos"
+            },
+            {
+                id: "P28", category: "🎂 Panadería", img: "cake", caption: "90 galletas",
+                story: "El panadero horneó 90 galletas. El 10% son de avena. ¿Cuántas galletas son de avena?",
+                prompt: "¿Cuánto es el 10% de 90?", ans: 9, unit: "galletas"
+            },
+            {
+                id: "P29", category: "🐷 Premio", img: "piggy", caption: "Bono de $200",
+                story: "Por ganar un concurso, Elena recibió $200 y decidió ahorrar el 50%. ¿Cuánto dinero ahorró?",
+                prompt: "¿Cuánto es el 50% de $200?", ans: 100, unit: "$"
+            },
+            {
+                id: "P30", category: "👕 Uniformes", img: "shirt", caption: "20 gorras",
+                story: "El equipo recibió 20 gorras nuevas. El 75% (tres cuartas partes) son de talla mediana. ¿Cuántas gorras son medianas?",
+                prompt: "¿Cuánto es el 75% de 20?", ans: 15, unit: "gorras"
+            }
+        ];
+
+        // ==========================================
+        // ESTADO Y BARAJADO POR COMPUTADORA
+        // ==========================================
+        let shuffledProblems = [];
+        let currentIndex = 0;
+        let isCurrentSolved = false;
+        let soundEnabled = true;
+
+        // Algoritmo Fisher-Yates para revolver los 30 ejercicios de forma distinta en cada PC
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        // Código visual identificador de la sesión/PC
+        function generateSessionCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = "";
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const fullCode = "PC-" + code;
+            document.getElementById("session-id").textContent = fullCode;
+            document.getElementById("final-pc-code").textContent = fullCode;
+        }
+
+        // ==========================================
+        // SONIDO CON TONE.JS
+        // ==========================================
+        function playSound(type) {
+            if (!soundEnabled || typeof Tone === 'undefined') return;
+            try {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -8;
+                const now = Tone.now();
+
+                if (type === 'success') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.09);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.18);
+                    synth.triggerAttackRelease("C6", "8n", now + 0.27);
+                } else if (type === 'error') {
+                    synth.triggerAttackRelease(["G3", "F#3"], "16n", now);
+                }
+            } catch (e) {
+                // Evitar errores si el navegador bloquea el audio inicialmente
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById("sound-btn").textContent = soundEnabled ? "🔊" : "🔇";
+        }
+
+        // ==========================================
+        // CONFETI AL TERMINAR CADA EJERCICIO
+        // ==========================================
+        function launchConfetti(isGrandFinale = false) {
+            if (typeof confetti === 'undefined') return;
+            if (isGrandFinale) {
+                const duration = 2800;
+                const end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 7, angle: 60, spread: 60, origin: { x: 0 } });
+                    confetti({ particleCount: 7, angle: 120, spread: 60, origin: { x: 1 } });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            } else {
+                confetti({
+                    particleCount: 90,
+                    spread: 75,
+                    origin: { y: 0.65 },
+                    colors: ['#06b6d4', '#3b82f6', '#10b981', '#f59e0b', '#ec4899']
+                });
+            }
+        }
+
+        // ==========================================
+        // RENDERIZADO DE CADA PÁGINA / EJERCICIO
+        // ==========================================
+        function renderExercise() {
+            const problem = shuffledProblems[currentIndex];
+            isCurrentSolved = false;
+
+            const total = shuffledProblems.length;
+            const pageNum = currentIndex + 1;
+
+            // Actualizar barra superior
+            document.getElementById("progress-counter").textContent = `Página ${pageNum} de ${total}`;
+            document.getElementById("progress-bar").style.width = `${(pageNum / total) * 100}%`;
+
+            // Animación de entrada de página
+            const card = document.getElementById("exercise-card");
+            card.classList.remove("animate-pop");
+            void card.offsetWidth;
+            card.classList.add("animate-pop");
+
+            // Actualizar datos e ilustración
+            document.getElementById("problem-category").textContent = problem.category;
+            document.getElementById("problem-title").textContent = `Problema #${pageNum}`;
+            document.getElementById("problem-story").textContent = problem.story;
+            document.getElementById("problem-image").innerHTML = svgIllustrations[problem.img] || svgIllustrations.bag;
+            document.getElementById("image-caption").textContent = problem.caption;
+
+            // Reiniciar caja de respuesta
+            document.getElementById("question-prompt").textContent = problem.prompt;
+            document.getElementById("answer-unit").textContent = problem.unit;
+
+            const box = document.getElementById("answer-box");
+            box.className = "p-5 sm:p-6 rounded-2xl border-2 border-blue-200 bg-blue-50/40 transition-all duration-300";
+
+            const input = document.getElementById("answer-input");
+            input.value = "";
+            input.disabled = false;
+            input.className = "w-full px-4 py-3.5 rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:outline-none text-lg font-bold text-slate-800 bg-white transition";
+
+            const btn = document.getElementById("check-btn");
+            btn.disabled = false;
+            btn.textContent = "Comprobar Respuesta";
+            btn.className = "px-7 py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 active:scale-95 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition cursor-pointer";
+
+            const feedback = document.getElementById("feedback-msg");
+            feedback.classList.add("hidden");
+
+            // Ocultar botón de siguiente hasta que lo resuelva
+            document.getElementById("next-section").classList.add("hidden");
+
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function parseNumber(raw) {
+            if (!raw || raw.trim() === "") return NaN;
+            const clean = raw.trim().replace(",", ".");
+            if (!/^-?\d+(\.\d+)?$/.test(clean)) return NaN;
+            return parseFloat(clean);
+        }
+
+        function checkAnswer() {
+            if (isCurrentSolved) return;
+
+            const problem = shuffledProblems[currentIndex];
+            const input = document.getElementById("answer-input");
+            const userVal = parseNumber(input.value);
+            const feedback = document.getElementById("feedback-msg");
+            const box = document.getElementById("answer-box");
+
+            if (isNaN(userVal)) {
+                playSound('error');
+                box.classList.remove("animate-shake");
+                void box.offsetWidth;
+                box.classList.add("animate-shake");
+                feedback.textContent = "⚠️ Por favor, escribe un número válido para continuar.";
+                feedback.className = "mt-3 text-sm font-semibold text-rose-600";
+                input.focus();
+                return;
+            }
+
+            if (Math.abs(userVal - problem.ans) < 0.001) {
+                // ¡Ejercicio resuelto!
+                isCurrentSolved = true;
+                playSound('success');
+                launchConfetti(false);
+
+                box.className = "p-5 sm:p-6 rounded-2xl border-2 border-emerald-300 bg-emerald-50/60 transition-all duration-300";
+                input.disabled = true;
+                input.className = "w-full px-4 py-3.5 rounded-xl border-2 border-emerald-300 text-lg font-bold text-emerald-800 bg-emerald-50 transition";
+
+                const btn = document.getElementById("check-btn");
+                btn.disabled = true;
+                btn.textContent = "¡Logrado! ✓";
+                btn.className = "px-7 py-3.5 bg-emerald-500 text-white font-bold rounded-xl cursor-default";
+
+                feedback.textContent = `🌟 ¡Excelente! ${problem.prompt.replace('?', '')} es ${problem.ans} ${problem.unit}.`;
+                feedback.className = "mt-3 text-sm font-semibold text-emerald-700";
+
+                // Desbloquear botón para ir a la siguiente página
+                const nextSection = document.getElementById("next-section");
+                nextSection.classList.remove("hidden");
+
+                const nextBtn = document.getElementById("next-btn");
+                if (currentIndex === shuffledProblems.length - 1) {
+                    nextBtn.innerHTML = "<span>Finalizar y Ver Trofeo</span> <span>🏆</span>";
+                } else {
+                    nextBtn.innerHTML = "<span>Siguiente Ejercicio</span> <span>➔</span>";
+                }
+
+                setTimeout(() => nextBtn.focus(), 150);
+            } else {
+                // Error: no puede pasar al siguiente hasta corregirlo
+                playSound('error');
+                box.classList.remove("animate-shake");
+                void box.offsetWidth;
+                box.classList.add("animate-shake");
+                feedback.textContent = "❌ Ese número no es correcto. Revisa el porcentaje e inténtalo de nuevo.";
+                feedback.className = "mt-3 text-sm font-semibold text-rose-600";
+                input.select();
+            }
+        }
+
+        function nextExercise() {
+            if (!isCurrentSolved) return;
+
+            if (currentIndex < shuffledProblems.length - 1) {
+                currentIndex++;
+                renderExercise();
+            } else {
+                // Completó los 30 ejercicios
+                document.getElementById("exercise-card").classList.add("hidden");
+                document.getElementById("victory-card").classList.remove("hidden");
+                launchConfetti(true);
+                playSound('success');
+            }
+        }
+
+        function resetAll() {
+            generateSessionCode();
+            shuffledProblems = shuffleArray(percentageProblems);
+            currentIndex = 0;
+            document.getElementById("victory-card").classList.add("hidden");
+            document.getElementById("exercise-card").classList.remove("hidden");
+            renderExercise();
+        }
+
+        // Tecla Enter para comprobar o avanzar
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                if (!isCurrentSolved && document.activeElement.id === "answer-input") {
+                    checkAnswer();
+                } else if (isCurrentSolved && !document.getElementById("next-section").classList.contains("hidden")) {
+                    nextExercise();
+                }
+            }
+        });
+
+        window.onload = function() {
+            generateSessionCode();
+            shuffledProblems = shuffleArray(percentageProblems);
+            renderExercise();
+        };
+    </script>
+</body>
+</html>
